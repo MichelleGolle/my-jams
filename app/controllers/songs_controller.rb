@@ -1,6 +1,8 @@
 class SongsController < ApplicationController
 
   def index
+    session[:hit_counter] ||= 0
+    session[:hit_counter] += 1
     @songs = Song.all
   end
 
@@ -15,8 +17,10 @@ class SongsController < ApplicationController
   def create
     @song = Song.new(song_params)
     if @song.save
+      flash.notice = "Song '#{@song.title}' Created!"
       redirect_to song_path(@song)
     else
+      flash.notice = "#{@song.errors.full_messages}.join( , )"
       render :new
     end
   end
